@@ -3,381 +3,294 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace kropotova_lab
 {
-    /*Class Program
-     {
-         static void Main(string[] args)
-         {
-             //ExceptionTest();
-             //ExceptionTest2();
-             //ExceptionTest3();
-             //ExceptionTest4();
-             //ExceptionTest5();
-             //ExceptionTest6();
-             //ExceptionTest7();
-             //ExceptionTest8();
-             //ExceptionTest9();
-             //ExceptionTest10();
-             //ExceptionTest11();
-             //ExceptionTest12();
-             //ExceptionTest13();
-             //ExceptionTest14();
-             //ExceptionTest15();
-             //ExceptionTest16();
-             //ExceptionTest17(); 
-
-
-             Console.ReadKey();
-         }
-
-         static void ExceptionTest()
-         {
-             DriveInfo[] drives = DriveInfo.GetDrives();
-
-             foreach (DriveInfo drive in drives)
-             {
-                 Console.WriteLine($"Название: {drive.Name}");
-                 Console.WriteLine($"Тип: {drive.DriveType}");
-                 if (drive.IsReady)
-                 {
-                     Console.WriteLine($"Объем диска: {drive.TotalSize}");
-                     Console.WriteLine($"Свободное пространство: {drive.TotalFreeSpace}");
-                     Console.WriteLine($"Метка: {drive.VolumeLabel}");
-                 }
-                 Console.WriteLine();
-             }
-
-         }
-         static void ExceptionTest2()
-         {
-             string dirName = "C:\\";
-
-             if (Directory.Exists(dirName))
-             {
-                 Console.WriteLine("Подкаталоги:");
-                 string[] dirs = Directory.GetDirectories(dirName);
-                 foreach (string s in dirs)
-                 {
-                     Console.WriteLine(s);
-                 }
-                 Console.WriteLine();
-                 Console.WriteLine("Файлы:");
-                 string[] files = Directory.GetFiles(dirName);
-                 foreach (string s in files)
-                 {
-                     Console.WriteLine(s);
-                 }
-             }
-         }
-         static void ExceptionTest3()
-         {
-             string path = @"C:\SomeDir";
-             string subpath = @"program\avalon";
-             DirectoryInfo dirInfo = new DirectoryInfo(path);
-             if (!dirInfo.Exists)
-             {
-                 dirInfo.Create();
-             }
-             dirInfo.CreateSubdirectory(subpath);
-         }
-         static void ExceptionTest4()
-         {
-             string dirName = "C:\\Program Files";
-
-             DirectoryInfo dirInfo = new DirectoryInfo(dirName);
-
-             Console.WriteLine($"Название каталога: {dirInfo.Name}");
-             Console.WriteLine($"Полное название каталога: {dirInfo.FullName}");
-             Console.WriteLine($"Время создания каталога: {dirInfo.CreationTime}");
-             Console.WriteLine($"Корневой каталог: {dirInfo.Root}");
-         }
-         static void ExceptionTest5()
-         {
-             string dirName = @"C:\SomeFolder";
-
-             try
-             {
-                 DirectoryInfo dirInfo = new DirectoryInfo(dirName);
-                 dirInfo.Delete(true);
-                 Console.WriteLine("Каталог удален");
-             }
-             catch (Exception ex)
-             {
-                 Console.WriteLine(ex.Message);
-             }
-
-         }
-         static void ExceptionTest6()
-         {
-             string oldPath = @"C:\SomeFolder";
-             string newPath = @"C:\SomeDir";
-             DirectoryInfo dirInfo = new DirectoryInfo(oldPath);
-             if (dirInfo.Exists && Directory.Exists(newPath) == false)
-             {
-                 dirInfo.MoveTo(newPath);
-             }
-         }
-         static void ExceptionTest7()
-         {
-             string path = @"C:\apache\hta.txt";
-             FileInfo fileInf = new FileInfo(path);
-             if (fileInf.Exists)
-             {
-                 Console.WriteLine("Имя файла: {0}", fileInf.Name);
-                 Console.WriteLine("Время создания: {0}", fileInf.CreationTime);
-                 Console.WriteLine("Размер: {0}", fileInf.Length);
-             }
-         }
-         static void ExceptionTest8()
-         {
-             string path = @"C:\apache\hta.txt";
-             FileInfo fileInf = new FileInfo(path);
-             if (fileInf.Exists)
-             {
-                 fileInf.Delete();
-                 // альтернатива с помощью класса File
-                 // File.Delete(path);
-             }
-         }
-         static void ExceptionTest9()
-         {
-             string path = @"C:\apache\hta.txt";
-             string newPath = @"C:\SomeDir\hta.txt";
-             FileInfo fileInf = new FileInfo(path);
-             if (fileInf.Exists)
-             {
-                 fileInf.MoveTo(newPath);
-                 // альтернатива с помощью класса File
-                 // File.Move(path, newPath);
-             }
-         }
-         static void ExceptionTest10()
-         {
-             string path = @"C:\apache\hta.txt";
-             string newPath = @"C:\SomeDir\hta.txt";
-             FileInfo fileInf = new FileInfo(path);
-             if (fileInf.Exists)
-             {
-                 fileInf.CopyTo(newPath, true);
-                 // альтернатива с помощью класса File
-                 // File.Copy(path, newPath, true);
-             }
-         }
-         static void ExceptionTest11()
-         {
-
-
-
-
-
-
-             // создаем каталог для файла
-             string path = @"C:\SomeDir2";
-             DirectoryInfo dirInfo = new DirectoryInfo(path);
-             if (!dirInfo.Exists)
-             {
-                 dirInfo.Create();
-             }
-             Console.WriteLine("Введите строку для записи в файл:");
-             string text = Console.ReadLine();
-
-             // запись в файл
-             using (FileStream fstream = new FileStream($"{path}\note.txt", FileMode.OpenOrCreate))
-             {
-                 // преобразуем строку в байты
-                 byte[] array = System.Text.Encoding.Default.GetBytes(text);
-                 // запись массива байтов в файл
-                 fstream.Write(array, 0, array.Length);
-                 Console.WriteLine("Текст записан в файл");
-             }
-
-             // чтение из файла
-             using (FileStream fstream = File.OpenRead($"{path}\note.txt"))
-             {
-                 // преобразуем строку в байты
-                 byte[] array = new byte[fstream.Length];
-                 // считываем данные
-                 fstream.Read(array, 0, array.Length);
-                 // декодируем байты в строку
-                 string textFromFile = System.Text.Encoding.Default.GetString(array);
-                 Console.WriteLine($"Текст из файла: {textFromFile}");
-             }
-
-             Console.ReadLine();
-         }
-         static async void ExceptionTest12()
-         {
-             // создаем каталог для файла
-             string path = @"C:\SomeDir3";
-             DirectoryInfo dirInfo = new DirectoryInfo(path);
-             if (!dirInfo.Exists)
-             {
-                 dirInfo.Create();
-             }
-             Console.WriteLine("Введите строку для записи в файл:");
-             string text = Console.ReadLine();
-
-             // запись в файл
-             using (FileStream fstream = new FileStream($"{path}\note.txt", FileMode.OpenOrCreate))
-             {
-                 byte[] array = System.Text.Encoding.Default.GetBytes(text);
-                 // асинхронная запись массива байтов в файл
-                 await fstream.WriteAsync(array, 0, array.Length);
-                 Console.WriteLine("Текст записан в файл");
-             }
-
-             // чтение из файла
-             using (FileStream fstream = File.OpenRead($"{path}\note.txt"))
-             {
-                 byte[] array = new byte[fstream.Length];
-                 // асинхронное чтение файла
-                 await fstream.ReadAsync(array, 0, array.Length);
-
-                 string textFromFile = System.Text.Encoding.Default.GetString(array);
-                 Console.WriteLine($"Текст из файла: {textFromFile}");
-             }
-
-             Console.ReadLine();
-
-         }
-         static void ExceptionTest13()
-         {
-             FileStream fstream = null;
-             try
-             {
-                 fstream = new FileStream(@"D:\note3.dat", FileMode.OpenOrCreate);
-                 // операции с потоком
-             }
-             catch (Exception ex)
-             {
-
-             }
-             finally
-             {
-                 if (fstream != null)
-                     fstream.Close();
-             }
-         }
-         static void ExceptionTest14()
-         {
-             FileStream fstream = null;
-             try
-             {
-                 fstream = new FileStream(@"D:\note3.dat", FileMode.OpenOrCreate);
-                 // операции с потоком
-             }
-             catch (Exception ex)
-             {
-
-             }
-             finally
-             {
-                 if (fstream != null)
-                     fstream.Close();
-             }
-         }
-         static void ExceptionTest15()
-         {
-             string writePath = @"C:\SomeDir\hta.txt";
-
-             string text = "Привет мир!\nПока мир...";
-             try
-             {
-                 using (StreamWriter sw = new StreamWriter(writePath, false, System.Text.Encoding.Default))
-                 {
-                     sw.WriteLine(text);
-                 }
-
-                 using (StreamWriter sw = new StreamWriter(writePath, true, System.Text.Encoding.Default))
-                 {
-                     sw.WriteLine("Дозапись");
-                     sw.Write(4.5);
-                 }
-                 Console.WriteLine("Запись выполнена");
-             }
-             catch (Exception e)
-             {
-                 Console.WriteLine(e.Message);
-             }
-         }
-         static async void ExceptionTest16()
-         {
-
-             {
-                 string path = @"C:\SomeDir\hta.txt";
-
-                 try
-                 {
-                     using (StreamReader sr = new StreamReader(path))
-                     {
-                         Console.WriteLine(sr.ReadToEnd());
-                     }
-                     // асинхронное чтение
-                     using (StreamReader sr = new StreamReader(path))
-                     {
-                         Console.WriteLine(value: await sr.ReadToEndAsync());
-                     }
-                 }
-                 catch (Exception e)
-                 {
-                     Console.WriteLine(e.Message);
-                 }
-             }
-         }
-         static void ExceptionTest17()
-         {
-
-         }
-
-
-
-
-
-     }*/
-    [Serializable]
-    class Person
-    {
-        public string Name { get; set; }
-        public int Age { get; set; }
-
-        public Person(string name, int age)
-        {
-            Name = name;
-            Age = age;
-        }
-    }
-
     class Program
     {
-        static void Main(string[] args)
+        static void Main(string[] args) {
+            //ExceptionTest();
+            //ExceptionTest2();
+            //ExceptionTest3();
+            //ExceptionTest4(); 
+            //ExceptionTest5();
+            //ExceptionTest6();
+            //ExceptionTest7();
+            //ExceptionTest8();
+            //ExceptionTest9();
+            //ExceptionTest10();
+            //ExceptionTest11();
+            //ExceptionTest12();
+            //ExceptionTest13();
+            //ExceptionTest14();
+
+            FactorialAsync(-4);
+            FactorialAsync(6);
+
+            Console.ReadKey();
+        }
+
+        private static void FactorialAsync(int v)
         {
-            // объект для сериализации
-            Person person = new Person("Tom", 29);
-            Console.WriteLine("Объект создан");
+            throw new NotImplementedException();
+        }
 
-            // создаем объект BinaryFormatter
-            BinaryFormatter formatter = new BinaryFormatter();
-            // получаем поток, куда будем записывать сериализованный объект
-            using (FileStream fs = new FileStream("people.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, person);
+        static void ExceptionTest()
+        {
+            Task task1 = new Task(() => Console.WriteLine("Task1 is executed"));
+            task1.Start();
 
-                Console.WriteLine("Объект сериализован");
-            }
+            Task task2 = Task.Factory.StartNew(() => Console.WriteLine("Task2 is executed"));
 
-            // десериализация из файла people.dat
-            using (FileStream fs = new FileStream("people.dat", FileMode.OpenOrCreate))
-            {
-                Person newPerson = (Person)formatter.Deserialize(fs);
-
-                Console.WriteLine("Объект десериализован");
-                Console.WriteLine($"Имя: {newPerson.Name} --- Возраст: {newPerson.Age}");
-            }
+            Task task3 = Task.Run(() => Console.WriteLine("Task3 is executed"));
 
             Console.ReadLine();
         }
+        static void ExceptionTest2()
+        {
+            Task task = new Task(Display);
+            task.Start();
+
+            Console.WriteLine("Завершение метода Main");
+
+            Console.ReadLine();
+        }
+        static void ExceptionTest3()
+        {
+            Task task = new Task(Display);
+            task.Start();
+            task.Wait();
+            Console.WriteLine("Завершение метода Main");
+            Console.ReadLine();
+        }
+        static async Task ExceptionTest4Async()
+        {
+            int result = 1;
+            for (int i = 1; i <= 6; i++)
+            {
+                result *= i;
+            }
+            Thread.Sleep(8000);
+            Console.WriteLine($"Факториал равен {result}");
+
+            Console.WriteLine("Начало метода FactorialAsync"); // выполняется синхронно
+            await Task.Run(() => Factorial());                // выполняется асинхронно
+            Console.WriteLine("Конец метода FactorialAsync");
+        }
+        static void ExceptionTest5()
+        {
+            int result = 1;
+            for (int i = 1; i <= 6; i++)
+            {
+                result *= i;
+            }
+            Thread.Sleep(8000);
+            Console.WriteLine($"Факториал равен {result}");
+
+            Console.WriteLine("Начало метода FactorialAsync"); // выполняется синхронно
+            await Task.Run(() => FactorialAsync());                // выполняется асинхронно
+            Console.WriteLine("Конец метода FactorialAsync");
+        }
+        static void ExceptionTest6()
+        {
+            string s = "Hello world! One step at a time";
+
+
+            using (StreamWriter writer = new StreamWriter("hello.txt", false))
+            {
+                await writer.WriteLineAsync(s);  // асинхронная запись в файл
+            }
+            using (StreamReader reader = new StreamReader("hello.txt"))
+            {
+                string result = await reader.ReadToEndAsync();  // асинхронное чтение из файла
+                Console.WriteLine(result);
+            }
+            static void ExceptionTest6()
+            {
+                int result = 1;
+                for (int i = 1; i <= 6; i++)
+                {
+                    result *= i;
+                }
+                Thread.Sleep(8000);
+                Console.WriteLine($"Факториал равен {result}");
+            }
+        }
+        static void ExceptionTest7()
+        {
+            int result = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                result *= i;
+            }
+            Thread.Sleep(5000);
+            Console.WriteLine($"Факториал равен {result}");
+            {
+                Console.WriteLine("Некоторая работа");
+                Console.Read();
+            }
+
+            static void ExceptionTest8()
+            {
+                int result = 1;
+                for (int i = 1; i <= n; i++)
+                {
+                    result *= i;
+                }
+                return result;
+            }
+            // определение асинхронного метода
+            /*static async void FactorialAsync(int n)
+                {
+                    int x = await Task.Run(() => Factorial(n));
+                    Console.WriteLine($"Факториал равен {x}");
+                }
+                static void Main(string[] args)
+                {
+                    FactorialAsync(5);
+                    FactorialAsync(6);
+                    Console.Read();*/
+        }
+        static void ExceptionTest9()
+        {
+            int result = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                result *= i;
+            }
+            return result;
+        }
+        static async Task<int> FactorialAsync(int n)
+        {
+            return await Task.Run(() => Factorial(n));
+        }
+        static async Task Main(string[] args)
+        {
+            int n1 = await FactorialAsync(5);
+            int n2 = await FactorialAsync(6);
+            Console.WriteLine($"n1={n1}  n2={n2}");
+            Console.Read();
+        }
+        static void ExceptionTest10()
+        {
+            int result = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                result *= i;
+            }
+            Console.WriteLine($"Факториал числа {n} равен {result}");
+        }
+        // определение асинхронного метода
+        static async void FactorialAsync()
+        {
+            await Task.Run(() => Factorial(4));
+            await Task.Run(() => Factorial(3));
+            await Task.Run(() => Factorial(5));
+        }
+        static void ExceptionTest11()
+        {
+            if (n < 1)
+                throw new Exception($"{n} : число не должно быть меньше 1");
+            int result = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                result *= i;
+            }
+            Console.WriteLine($"Факториал числа {n} равен {result}");
+        }
+        static async void FactorialAsync(int n)
+        {
+            try
+            {
+                await Task.Run(() => Factorial(n));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        static void ExceptionTest12()
+        {
+            Task task = null;
+            try
+            {
+                task = Task.Run(() => Factorial(n));
+                await task;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(task.Exception.InnerException.Message);
+                Console.WriteLine($"IsFaulted: {task.IsFaulted}");
+            }
+
+        }
+        static void ExceptionTest13()
+        {
+            try
+            {
+                await Task.Run(() => Factorial(n)); ;
+            }
+            catch (Exception ex)
+            {
+                await Task.Run(() => Console.WriteLine(ex.Message));
+            }
+            finally
+            {
+                await Task.Run(() => Console.WriteLine("await в блоке finally"));
+            }
+        }
+        static void ExceptionTest14()
+        {
+            int result = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    Console.WriteLine("Операция прервана токеном");
+                    return;
+                }
+                result *= i;
+                Console.WriteLine($"Факториал числа {i} равен {result}");
+                Thread.Sleep(1000);
+            }
+        }
+        // определение асинхронного метода
+        static async void FactorialAsync(int n, CancellationToken token)
+        {
+            if (token.IsCancellationRequested)
+                return;
+            await Task.Run(() => Factorial(n, token));
+        }
+
+        static void Main(string[] args)
+        {
+            CancellationTokenSource cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
+            FactorialAsync(6, token);
+            Thread.Sleep(3000);
+            cts.Cancel();
+            Console.Read();
+        }
+
+
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       

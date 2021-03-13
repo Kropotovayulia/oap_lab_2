@@ -9,12 +9,12 @@
   <tr>
     <td style="text-align: center; border: none; height: 15em;">
     <h2 style="font-size:3em;">Отчет</h2>
-      <h3>по лабораторной работе<br><br> по дисциплине "Основы алгоритмизации и программирования"<br><br> Тема:<b>"Работа с потоками и файловой системой."<b> </h3></td>
+      <h3>по лабораторной работе<br><br> по дисциплине "Основы алгоритмизации и программирования"<br><br> Тема:<b>"Многопоточность."<b> </h3></td>
   </tr>
   <tr>
     <br><br><td style="text-align: right; border: none; height: 20em;">
       Разработал:<br/>
-      Колесников Дмитрий<br>
+      Кропотова Юлия<br>
       Группа: И-21<br>
       Преподаватель:<br>
       Колесников Евгений Иванович
@@ -29,131 +29,69 @@
 <div style="page-break-after: always;"></div>
 
 # Цели и задачи:
- 1. Научится работать с дисками
- 2. Научится работать с каталогами
- 3. Работать с файлами. Классы File и FileInfo
- 4. Находим произвольный доступ к файлам
- 5. Закрытие потока
- 6. Бинарные файлы. BinaryWriter и BinaryReader
+ 1.  Научится определять запуск 3 разными способами
+ 2. Узнать о асинхронном программировании. Асинхронные методы, async и await.
+ 3. Методы
+ 4. Научится определять асинхронную операцию
 
 
 
 # Краткий материал.
 
-1. Работу с файловой системой начнем с самого верхнего уровня - дисков. Для представления диска в пространстве имен ```System.IO``` имеется класс ``DriveInfo``
-Этот класс имеет статический метод GetDrives, который возвращает имена всех логических дисков компьютера.
+1. Для определения и запуска задачи можно использовать различные способы. Первый способ создание объекта ```Task``` и вызов у него метода ```Start: ``` 
 
     ```
-    Название: C:\
-    Тип: Fixed
-    Объем диска: 63757606912
-    Свободное пространство: 13795221504
-    Метка:
-
-    Название: D:\
-    Тип: CDRom```</b>
+    Task task = new Task(() => Console.WriteLine("Hello Task!"));
+task.Start();
     ```
 
-2. Класс Directory предоставляет ряд статических методов для управления каталогами. DirectoryInfo предоставляет функциональность для создания, удаления, перемещения и других операций с каталогами.
+   Второй способ заключается в использовании статического метода ```Task.Factory.StartNew().``` Этот метод также в качестве параметра принимает делегат Action, который указывает, какое действие будет выполняться.
 
     ```
-    string path = @"C:\SomeDir";
-    string subpath = @"program\avalon";
-    DirectoryInfo dirInfo = new DirectoryInfo(path);
-    if (!dirInfo.Exists)
-    {
-        dirInfo.Create();
-    }
-    dirInfo.CreateSubdirectory(subpath);
+    Task task = Task.Factory.StartNew(() => Console.WriteLine("Hello Task!"));
     ```
 
-3. Работа с файлами. Классы File и FileInfo
+   Третий способ определения и запуска задач представляет использование статического метода ```Task.Run():```
+    ```
+    Task task = Task.Run(() => Console.WriteLine("Hello Task!"));
+    ```
+
+2. Слово async, которое указывается в определении метода, не делает автоматически метод асинхронным. Оно лишь указывает, что данный метод может содержать одно или несколько выражений await.
 
     ```
-    Получение информации о файле
-    string path = @"C:\apache\hta.txt";
-    FileInfo fileInf = new FileInfo(path);
-    if (fileInf.Exists)
-    {
-        Console.WriteLine("Имя файла: {0}", fileInf.Name);
-        Console.WriteLine("Время создания: {0}", fileInf.CreationTime);
-        Console.WriteLine("Размер: {0}", fileInf.Length);
-    }
-    ```
-4. Произвольный доступ к файлам
-
-    ```
-    С помощью метода Seek() мы можем управлять положением курсора потока, начиная с которого производится считывание или запись в файл. Этот метод принимает два параметра: offset (смещение) и позиция в файле. 
-
-    Консольный вывод:
-    Текст записан в файл
-    Текст из файла: worl
-    Текст из файла: hello house
-    ```
-5. Закрытие потока
-
-Для закрытия потока применяется конструкция using. После того как все операторы и выражения в блоке using отработают, объект FileStream уничтожается.
-    ```
-    FileStream fstream = null;
-    try
-    {
-        fstream = new FileStream(@"D:\note3.dat", FileMode.OpenOrCreate);
-        // операции с потоком
-    }
-    catch(Exception ex)
-    {
-    
-    }
-    finally
-    {
-        if (fstream != null)
-            fstream.Close();
-    }
-    Если мы не используем конструкцию using, то нам надо явным образом вызвать метод Close(): fstream.Close()
-    ```
-6. Бинарные файлы. BinaryWriter и BinaryReader
-    ```
-    Для работы с бинарными файлами предназначена пара классов BinaryWriter и BinaryReader. Эти классы позволяют читать и записывать данные в двоичном формате.
-    Чтобы объект определенного класса можно было сериализовать, надо этот класс пометить атрибутом Serializable:
-
-    [Serializable]
-    class Person
-    {
-        public string Name { get; set; }
-        public int Year { get; set; }
-    
-        public Person(string name, int year)
+    // определение асинхронного метода
+        static async void FactorialAsync()
         {
-            Name = name;
-            Year = year;
+            Console.WriteLine("Начало метода FactorialAsync"); // выполняется синхронно
+            await Task.Run(()=>Factorial());                // выполняется асинхронно
+            Console.WriteLine("Конец метода FactorialAsync");
         }
+ 
+        static void Main(string[] args)
+        {
+            FactorialAsync();   // вызов асинхронного метода
+ 
+            Console.WriteLine("Введите число: ");
+            int n = Int32.Parse(Console.ReadLine());
+            Console.WriteLine($"Квадрат числа равен {n * n}");
+             
+            Console.Read();
     ```
+3. Асинхронный метод ReadWriteAsync() выполняет запись в файл некоторой строки и затем считывает записанный файл. Подобные операции могут занимать продолжительное время, особенно при больших объемах данных, поэтому такие операции лучше делать асинхронными.
+
+   ```
+    await writer.WriteLineAsync(s);  // асинхронная запись в файл
 
     ```
-    Для бинарной сериализации применяется класс BinaryFormatter:
+4. Определение асинхронной операции
+   
+    Как выше уже было сказано, фреймворк .NET имеет много встроенных методов, которые представляют асинхронную операцию. Они заканчиваются на суффикс Async. И перед вызывами подобных методов мы можем указывать оператор ```await.```
+    
 
-                // объект для сериализации
-                Person person = new Person("Tom", 29);
-                Console.WriteLine("Объект создан");
-    
-                // создаем объект BinaryFormatter
-                BinaryFormatter formatter = new BinaryFormatter();
-                // получаем поток, куда будем записывать сериализованный объект
-                using (FileStream fs = new FileStream("people.dat", FileMode.OpenOrCreate))
-                {
-                    formatter.Serialize(fs, person);
-    
-                    Console.WriteLine("Объект сериализован");
-                }
-    
-                // десериализация из файла people.dat
-                using (FileStream fs = new FileStream("people.dat", FileMode.OpenOrCreate))
-                {
-                    Person newPerson = (Person)formatter.Deserialize(fs);
-    
-                    Console.WriteLine("Объект десериализован");
-                    Console.WriteLine($"Имя: {newPerson.Name} --- Возраст: {newPerson.Age}");
+    ```
+    StreamWriter writer = new StreamWriter("hello.txt", false);
+    await writer.WriteLineAsync("Hello");  // асинхронная запись в файл
     ```
 
 # Вывод
-В данной лабораторной работе мы научились работать с дисками, каталогами, с классами File и FileInfo, находить произвольный доступ к файлам, закрывать потоки и бинарные файлы BinaryWriter и BinaryReader.
+В данной лабораторной работе мы научились работать с асинхронными методами решений задач и научились их определять
