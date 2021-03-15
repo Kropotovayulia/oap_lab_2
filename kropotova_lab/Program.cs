@@ -10,78 +10,116 @@ using System.Text.Json;
 
 namespace kropotova_lab
 {
-    [Serializable]
-    public class Student
-    {
-        public string Name { get; set; }
-        public DateTime BirthDay { get; set; }
-        public string Group { get; set; }
-        public Student() { }
-    }
-
-
     class Program
     {
 
-        static void Import()
-        {
-            var StudentList = new List<Student>();
-            using (TextFieldParser parser = new TextFieldParser(new StringReader("Иванов Иван Иванович,01.01.2000,И-21\nПетров Петр Петрович,02.02.2002,С-21\nСидоров Сидор Сидорович,03.03.2003,И-31")))
-            {
-                // свойство TextFieldType определяет тип полей: с разделителями или фиксированной ширины
-                parser.TextFieldType = FieldType.Delimited;
-
-                // можно указать произвольный разделитель
-                parser.SetDelimiters(",");
-
-                // считываем пока не дойдем до конца файла
-                while (!parser.EndOfData)
-                {
-                    //метод ReadFields разбивает исходную строку на массив строк
-                    string[] fields = parser.ReadFields();
-                    var Student1 = new Student();
-                    Student1.Name = fields[0];
-
-                    var DateParts = fields[1].Split('.');
-
-                    Student1.BirthDay = new DateTime(Convert.ToInt32(DateParts[2]), Convert.ToInt32(DateParts[1]), Convert.ToInt32(DateParts[0]));
-
-                    Student1.Group = fields[2];
-                    StudentList.Add(Student1);
-
-                }
-                XmlSerializer formatter = new XmlSerializer(typeof(Student[]));
-                using (FileStream fs = new FileStream("Students.xml", FileMode.OpenOrCreate))
-                {
-                    formatter.Serialize(fs, StudentList.ToArray());
-
-                }
-            }
-        }
-
-        static void Export()
-
-        {
-            using (FileStream fs = new FileStream("Students.xml", FileMode.OpenOrCreate))
-            {
-                XmlSerializer formatter = new XmlSerializer(typeof(Student[]));
-                Student[] newpeople = (Student[])formatter.Deserialize(fs);
-
-                string json = JsonSerializer.Serialize<Student[]>(newpeople);
-
-                Console.WriteLine(json);
-                ///Student restoredStudent = JsonSerializer.Deserialize<Student>(json);
-            }
-            Console.ReadLine();
-        }
-
-
         static void Main(string[] args)
         {
-            //Import();
+            //ExceptionTest();
+            //ExceptionTest2();
+            //ExceptionTest3();
+            //ExceptionTest4();
+            //ExceptionTest5();
+            //ExceptionTest6();
+        }
+        static void ExceptionTest()
+        {
+            var MassivDate = new List<DateTime>() {
+                new DateTime(2021, 3, 15),
+                new DateTime(2021, 2, 21),
+                new DateTime(2011, 5, 2),
+                new DateTime(2015, 3, 15),
+                new DateTime(2013, 3, 10),
+                new DateTime(2020, 1, 17)};
+            var result = new Dictionary<int, int>();
+            foreach (DateTime TekushayaData in MassivDate)
+            {
+                if (result.ContainsKey(TekushayaData.Month))
+                {
+                    result[TekushayaData.Month] = result[TekushayaData.Month] + 1;
+                }
+                else
+                    result[TekushayaData.Month] = 1;
+            }
+            var PopularMonth = -1;
+            var MaxCount = 0;
+            foreach (KeyValuePair<int, int> keyValue in result)
+            {
+                if (keyValue.Value > MaxCount)
+                {
+                    MaxCount = keyValue.Value;
+                    PopularMonth = keyValue.Key;
+                }
+            }
+            Console.WriteLine($"Популярный месяц {PopularMonth}");
+            Console.ReadKey();
+        }
+        static void ExceptionTest2()
+        {
+            Console.WriteLine("Input posledovatelnost: ");
+            string Posledovatelnost = Console.ReadLine();
+            var StrelkaCoint = 0;
+            var strelka1 = ">>-->";
+            var strelka2 = "<--<<";
+            int poz = 0;
+            while ((poz = Posledovatelnost.IndexOf(strelka1, poz)) >= 0)
+            {
+                StrelkaCoint++;
+                poz++;
+            }
+            poz = 0;
+            while ((poz = Posledovatelnost.IndexOf(strelka2, poz)) >= 0)
+            {
+                StrelkaCoint++;
+                poz++;
+            }
+            Console.WriteLine($"Количество стрелок: {StrelkaCoint}");
+            Console.ReadKey();
+        }
+        static void ExceptionTest3()
+        {
+            DateTime date1 = new DateTime(2021, 02, 21);
+            DateTime date2 = new DateTime(2026, 02, 25);
+            Console.WriteLine(Math.Abs(date1.Subtract(date2).TotalDays));
+        }
+        static void ExceptionTest4()
+        {
+            Console.WriteLine("Введите год: ");
+            DateTime date1 = new DateTime(Convert.ToInt32(Console.ReadLine()), 1, 1);
+            date1 = date1.AddDays(255);
+            var DateString = date1.ToString("dd MMMM");
+            Console.WriteLine($"день программиста отмечается  {DateString}");
+        }
+        static void ExceptionTest5()
+        {
+            Console.WriteLine("Введите день: ");
+            DateTime date1 = new DateTime(2021, 1, 1);
+            date1 = date1.AddDays(Convert.ToInt32(Console.ReadLine()) - 1);
+            var DateString = date1.ToString("dddd");
+            var voskresenie = date1.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)date1.DayOfWeek;
+            Console.WriteLine($"день недели {DateString}, и номер дня недели {voskresenie}");
+        }
+        static void ExceptionTest6()
+        {
+            DateTime date1 = new DateTime(2021, 06, 21);
+            Console.WriteLine("Введите дату в формате дд.мм.гггг: ");
+            string date2 = Console.ReadLine();
+            string[] StringArray = date2.Split('.');
+            var Date3 = new DateTime(Convert.ToInt32(StringArray[2]), Convert.ToInt32(StringArray[1]), Convert.ToInt32(StringArray[0]));
+            var Raznitca = date1.Subtract(Date3);
+            if (Raznitca.TotalDays == 0)
+            {
+                Console.WriteLine("Сегодня экзамен");
+            }
+            else if (Raznitca.TotalDays > 0)
+                Console.WriteLine($"Экзамен будет через {Raznitca.TotalDays} дней");
+            else
+                Console.WriteLine($"Экзамен был {Math.Abs(Raznitca.TotalDays)} дней назад");
 
-            Export();
 
+            Console.Write("Press ENTER to continue...");
+            Console.ReadLine();
         }
     }
 }
+
