@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace kropotova_lab
 {
@@ -14,112 +15,66 @@ namespace kropotova_lab
     {
 
         static void Main(string[] args)
+
         {
             //ExceptionTest();
             //ExceptionTest2();
             //ExceptionTest3();
-            //ExceptionTest4();
-            //ExceptionTest5();
-            //ExceptionTest6();
         }
+
         static void ExceptionTest()
         {
-            var MassivDate = new List<DateTime>() {
-                new DateTime(2021, 3, 15),
-                new DateTime(2021, 2, 21),
-                new DateTime(2011, 5, 2),
-                new DateTime(2015, 3, 15),
-                new DateTime(2013, 3, 10),
-                new DateTime(2020, 1, 17)};
-            var result = new Dictionary<int, int>();
-            foreach (DateTime TekushayaData in MassivDate)
+            Console.WriteLine("Введите строку для поиска времени: ");
+            var InpString = Console.ReadLine();
+            Regex RegexExpretion = new Regex(@"([0][1-9]|[1][0-9]|[2][0-3]):([0-5][0-9])");
+            var Result = RegexExpretion.Match(InpString);
+
+            if (RegexExpretion.IsMatch(InpString))
             {
-                if (result.ContainsKey(TekushayaData.Month))
-                {
-                    result[TekushayaData.Month] = result[TekushayaData.Month] + 1;
-                }
-                else
-                    result[TekushayaData.Month] = 1;
+                Console.WriteLine(Result.Value);
             }
-            var PopularMonth = -1;
-            var MaxCount = 0;
-            foreach (KeyValuePair<int, int> keyValue in result)
+            else
             {
-                if (keyValue.Value > MaxCount)
-                {
-                    MaxCount = keyValue.Value;
-                    PopularMonth = keyValue.Key;
-                }
+                Console.WriteLine("неккоректное время");
             }
-            Console.WriteLine($"Популярный месяц {PopularMonth}");
+
+
             Console.ReadKey();
         }
         static void ExceptionTest2()
         {
-            Console.WriteLine("Input posledovatelnost: ");
-            string Posledovatelnost = Console.ReadLine();
-            var StrelkaCoint = 0;
-            var strelka1 = ">>-->";
-            var strelka2 = "<--<<";
-            int poz = 0;
-            while ((poz = Posledovatelnost.IndexOf(strelka1, poz)) >= 0)
+            Console.WriteLine("Введите строку для поиска цвета: ");
+            var InpString = Console.ReadLine();
+            Regex RegexExpretion = new Regex(@"#([0-9]|[A-F]){6}");
+            var Result = RegexExpretion.Match(InpString);
+
+            if (RegexExpretion.IsMatch(InpString))
             {
-                StrelkaCoint++;
-                poz++;
+                Console.WriteLine(Result.Value);
             }
-            poz = 0;
-            while ((poz = Posledovatelnost.IndexOf(strelka2, poz)) >= 0)
+            else
             {
-                StrelkaCoint++;
-                poz++;
+                Console.WriteLine("неккоректный цвет");
             }
-            Console.WriteLine($"Количество стрелок: {StrelkaCoint}");
             Console.ReadKey();
         }
         static void ExceptionTest3()
         {
-            DateTime date1 = new DateTime(2021, 02, 21);
-            DateTime date2 = new DateTime(2026, 02, 25);
-            Console.WriteLine(Math.Abs(date1.Subtract(date2).TotalDays));
-        }
-        static void ExceptionTest4()
-        {
-            Console.WriteLine("Введите год: ");
-            DateTime date1 = new DateTime(Convert.ToInt32(Console.ReadLine()), 1, 1);
-            date1 = date1.AddDays(255);
-            var DateString = date1.ToString("dd MMMM");
-            Console.WriteLine($"день программиста отмечается  {DateString}");
-        }
-        static void ExceptionTest5()
-        {
-            Console.WriteLine("Введите день: ");
-            DateTime date1 = new DateTime(2021, 1, 1);
-            date1 = date1.AddDays(Convert.ToInt32(Console.ReadLine()) - 1);
-            var DateString = date1.ToString("dddd");
-            var voskresenie = date1.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)date1.DayOfWeek;
-            Console.WriteLine($"день недели {DateString}, и номер дня недели {voskresenie}");
-        }
-        static void ExceptionTest6()
-        {
-            DateTime date1 = new DateTime(2021, 06, 21);
-            Console.WriteLine("Введите дату в формате дд.мм.гггг: ");
-            string date2 = Console.ReadLine();
-            string[] StringArray = date2.Split('.');
-            var Date3 = new DateTime(Convert.ToInt32(StringArray[2]), Convert.ToInt32(StringArray[1]), Convert.ToInt32(StringArray[0]));
-            var Raznitca = date1.Subtract(Date3);
-            if (Raznitca.TotalDays == 0)
+            Console.WriteLine("Введите строку для поиска операций: ");
+            var InpString = Console.ReadLine();
+            Regex RegexExpretion = new Regex(@"([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)([+]|[-]|[*][\/]?)([-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?)");
+            var Result = RegexExpretion.Match(InpString);
+
+            if (RegexExpretion.IsMatch(InpString))
             {
-                Console.WriteLine("Сегодня экзамен");
+                Console.WriteLine(Result.Value);
             }
-            else if (Raznitca.TotalDays > 0)
-                Console.WriteLine($"Экзамен будет через {Raznitca.TotalDays} дней");
             else
-                Console.WriteLine($"Экзамен был {Math.Abs(Raznitca.TotalDays)} дней назад");
-
-
-            Console.Write("Press ENTER to continue...");
-            Console.ReadLine();
-        }
+            {
+                Console.WriteLine("неккоректная строка");
+            }
+            Console.ReadKey();
+        }         
     }
 }
 
